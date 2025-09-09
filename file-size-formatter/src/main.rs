@@ -1,25 +1,31 @@
 use std::env;
+#[derive(Debug)]
 
-enum FileSize {
-    Bytes(u64),
-    Kilobytes(f64),
-    Megabytes(f64),
-    Gigabytes(f64),
+struct Sizes {
+    bytes: String,
+    kilobytes: String,
+    megabytes: String,
+    gigabytes: String,
 }
 
-fn format_size(size: u64) -> String {
-    let filesize = match size {
-        0..=999 => FileSize::Bytes(size),
-        1000..=999_999 => FileSize::Kilobytes(size as f64 / 1000.0),
-        1_000_000..=999_999_999 => FileSize::Megabytes(size as f64 / 1_000_000.0),
-        _ => FileSize::Gigabytes(size as f64 / 1_000_000_000.0),
-    };
+fn format_size(size: u64, unit: &str) -> Sizes {
+    let unit = unit.to_lowercase();
 
-    match filesize {
-        FileSize::Bytes(bytes) => format!("{} bytes", bytes),
-        FileSize::Kilobytes(kb) => format!("{:.2} KB", kb),
-        FileSize::Megabytes(mb) => format!("{:.2} MB", mb),
-        FileSize::Gigabytes(gb) => format!("{:.2} GB", gb),
+    let bytes = match unit.as_str() {
+        "b" => size,
+        "kb" => size * 1000,
+        "mb" => size * 1000000,
+        "gb" => size * 1000000000,
+        _ => panic!("Unknown Unit!"),
+    };
+    let kbs = bytes / 1000;
+    let mbs = bytes / 1000000;
+    let gbs = bytes / 1000000000;
+    Sizes {
+        bytes: format!("{} bytes", bytes),
+        kilobytes: format!("{} bytes", bytes),
+        megabytes: format!("{} bytes", bytes),
+        gigabytes: format!("{} bytes", bytes),
     }
 }
 
@@ -31,7 +37,7 @@ fn main() {
     let num: u64 = parts[0]
         .parse()
         .expect("Argument should be <number> <unit>");
-    let _unit = parts[1];
-    let result = format_size(num);
-    println!("{}", result)
+    let unit: &str = parts[1];
+    let result = format_size(num, unit);
+    println!("{:?}", result)
 }
