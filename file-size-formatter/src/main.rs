@@ -1,3 +1,5 @@
+use std::env;
+
 enum FileSize {
     Bytes(u64),
     Kilobytes(f64),
@@ -22,6 +24,14 @@ fn format_size(size: u64) -> String {
 }
 
 fn main() {
-    let result = format_size(6888837399);
+    let args: Vec<String> = env::args().collect();
+    let inputarg: &str = &args[1];
+    println!("Size is: {}.", inputarg);
+    let parts: Vec<&str> = inputarg.split_whitespace().collect();
+    let num: u64 = parts[0]
+        .parse()
+        .expect("Argument should be <number> <unit>");
+    let _unit = parts[1];
+    let result = format_size(num);
     println!("{}", result)
 }
